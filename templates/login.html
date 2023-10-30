@@ -2,5 +2,17 @@
 
 {% block content %}
 <h2>Login Page</h2>
-<p>TODO: you should be able to log in to your account</p>
+<form action="/login" method="post">
+    <section>
+        <label for="login-user">Username:</label>
+        <input type="text" name="username" id="login-user" required>
+    </section>
+    <section>
+        <label for="login-pwd">Password:</label>
+        <input type="password" name="password" id="login-pwd" required>
+    </section>
+    <section>
+        <input type="submit" value="Login">
+    </section>
+</form>
 {% endblock %}
