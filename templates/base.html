@@ -9,6 +9,9 @@
 <body class="container">
     <header>
         <h1>Melon Tasting Reservation Scheduler</h1>
+        {% if logged_in %}
+        <a href="/logout">Logout</a>
+        {% endif %}
     </header>
     <main>
         {% block content %}
