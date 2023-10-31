@@ -3,13 +3,14 @@ import service
 import os
 import sys
 
-S_USER_KEY = "SESSION_USER"
 ENV_SESSION_KEY = "FLASK_SESSION_ENCRYPTION_KEY"
-
-if ENV_SESSION_KEY not in os.environ:
-    sys.exit("missing session encryption key")
+S_USER_KEY = "SESSION_USER"
 
 app = Flask(__name__)
+
+if ENV_SESSION_KEY not in os.environ:
+    app.logger.fatal("missing session encryption key")
+    sys.exit()
 app.secret_key = os.environ.get(ENV_SESSION_KEY)
 
 @app.context_processor
@@ -29,6 +30,8 @@ def index():
 def home():
     if S_USER_KEY not in session:
         return redirect(url_for("index"))
+    username = session[S_USER_KEY]
+    user = service.get_user(username)
     
     return render_template("home.html")
 
@@ -45,11 +48,10 @@ def logout():
 def process_login():
     username = request.form["username"]
     password = request.form["password"]
-    app.logger.info(f"login request {username}={password}")
 
     user = service.get_user(username)
     if user:
-        if user.password == password:
+        if user.credential.check_password(password):
             app.logger.info(f"login success for {user.username}")
             session[S_USER_KEY] = user.username
             return redirect(url_for("home"))
@@ -62,8 +64,14 @@ def process_login():
 
 @app.route("/schedule")
 def schedule():
+    if S_USER_KEY not in session:
+        return redirect(url_for("index"))
+    
     return render_template('schedule.html')
 
 @app.route("/results")
 def results():
+    if S_USER_KEY not in session:
+        return redirect(url_for("index"))
+    
     return render_template('results.html')
