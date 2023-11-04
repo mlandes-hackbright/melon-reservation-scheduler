@@ -1,4 +1,5 @@
 import bcrypt;
+from datetime import datetime
 
 class Credential:
     def __init__(self, password: str):
@@ -14,9 +15,29 @@ class User:
         self.username = username
         self.credential = credential
 
+class Reservation:
+    def __init__(self, datetime: datetime):
+        self.datetime = datetime
+
 user_data = {
-    "mlandes": User("mlandes", Credential("test"))
+    "mlandes": User("mlandes", Credential("mtest")),
+    "rlandes": User("rlandes", Credential("rtest"))
 }
 
-def get_user(username: str) -> User | None:
+reservation_data = {
+    "mlandes": [
+        Reservation(datetime.fromisoformat("2023-12-01T05:00:00")),
+        Reservation(datetime.fromisoformat("2023-12-04T10:00:00")),
+        Reservation(datetime.fromisoformat("2023-12-05T10:30:00"))
+    ],
+    "rlandes": [
+        Reservation(datetime.fromisoformat("2023-12-01T05:30:00")),
+        Reservation(datetime.fromisoformat("2023-12-03T10:00:00"))
+    ]
+}
+
+def get_user(username: str):
     return user_data.get(username)
+
+def get_reservations(username: str):
+    return reservation_data.get(username, [])

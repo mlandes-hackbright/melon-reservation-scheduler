@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Welcome USERNAME</h2>
-<p>App home - you are logged-in</p>
-<p>you should be able to see all of your user's scheduled appointments here...</p>
+<h2>Welcome {{ vm["username"] }}</h2>
+<ul>
+    {% for reservation in vm["reservations"] %}
+    <li>{{ reservation }}</li>
+    {% endfor %}
+</ul>
 <p><a href="/schedule">Schedule</a> an appointment</p>
 {% endblock %}

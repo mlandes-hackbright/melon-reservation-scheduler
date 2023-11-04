@@ -30,10 +30,15 @@ def index():
 def home():
     if S_USER_KEY not in session:
         return redirect(url_for("index"))
+    
     username = session[S_USER_KEY]
     user = service.get_user(username)
+    reservations = service.get_reservations(username)
     
-    return render_template("home.html")
+    return render_template("home.html", vm = {
+        "username": user.username,
+        "reservations": [ r.datetime.strftime("%A, %B %d, %Y @ %I:%M %p") for r in reservations ]
+    })
 
 @app.route("/login")
 def login():
@@ -69,9 +74,10 @@ def schedule():
     
     return render_template('schedule.html')
 
-@app.route("/results")
-def results():
-    if S_USER_KEY not in session:
-        return redirect(url_for("index"))
+@app.route("/schedule", methods=["POST"])
+def process_schedule_request():
+    appointment_time = request.form["sdtime"]
     
-    return render_template('results.html')
+    return render_template("results.html", vm = {
+        "success": False
+    })

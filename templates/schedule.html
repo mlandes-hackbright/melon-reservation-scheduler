@@ -2,6 +2,13 @@
 
 {% block content %}
 <h2>Schedule Page</h2>
-<p>schedule a new appointment here...</p>
-<p>see the results<a href="/results">results</a>!</p>
+<form action="/schedule" method="post">
+    <section>
+        <label for="schedule-dtime">Time:</label>
+        <input type="datetime-local" name="sdtime" id="schedule-dtime" step="120" required>
+    </section>
+    <section>
+        <input type="submit" value="Schedule">
+    </section>
+</form>
 {% endblock %}

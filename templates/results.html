@@ -2,5 +2,9 @@
 
 {% block content %}
 <h2>Results Page</h2>
-<p>TODO: view the results of your search...</p>
+{% if vm["success"] %}
+<p>great job!</p>
+{% else %}
+<p>bad job!</p>
+{% endif %}
 {% endblock %}
