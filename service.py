@@ -41,3 +41,15 @@ def get_user(username: str):
 
 def get_reservations(username: str):
     return reservation_data.get(username, [])
+
+def get_all_reservation_times():
+    result: set[datetime] = set()
+    for reservations in reservation_data.values():
+        times = [r.datetime for r in reservations]
+        result.update(times)
+
+    return list(result)
+
+def add_reservation(username: str, time: datetime):
+    reservation = Reservation(time)
+    reservation_data.get(username, []).append(reservation)

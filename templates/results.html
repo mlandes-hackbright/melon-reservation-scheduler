@@ -3,8 +3,10 @@
 {% block content %}
 <h2>Results Page</h2>
 {% if vm["success"] %}
-<p>great job!</p>
+<h3>Success</h3>
+<p>see your <a href="/home">appointments</a></p>
 {% else %}
-<p>bad job!</p>
+<h3>Invalid Appointment</h3>
+<p>{{ vm["message"] }}</p>
 {% endif %}
 {% endblock %}

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, request, session, url_for
+from datetime import datetime
 import service
 import os
 import sys
@@ -76,8 +77,37 @@ def schedule():
 
 @app.route("/schedule", methods=["POST"])
 def process_schedule_request():
-    appointment_time = request.form["sdtime"]
+    if S_USER_KEY not in session:
+        return redirect(url_for("index"))
     
-    return render_template("results.html", vm = {
-        "success": False
-    })
+    username = session[S_USER_KEY]
+    user = service.get_user(username)
+    reservations = service.get_reservations(username)
+    reservation_times = [r.datetime for r in reservations]
+    all_reservation_times = service.get_all_reservation_times()
+    
+    appointment_time_str = request.form["sdtime"]
+    appointment_time = datetime.fromisoformat(appointment_time_str)
+    appointment_date_only = appointment_time.replace(hour=0, minute=0, second=0)
+
+    app.logger.info(reservation_times)
+    app.logger.info(appointment_time)
+    app.logger.info(appointment_date_only)
+    app.logger.info(all_reservation_times)
+    if appointment_date_only in [t.replace(hour=0, minute=0, second=0) for t in reservation_times]:
+        return render_template("results.html", vm = {
+            "success": False,
+            "message": "you already have an appointment on that date"
+        })
+    elif appointment_time in all_reservation_times:
+        return render_template("results.html", vm = {
+            "success": False,
+            "message": "somebody else has an appointment at that time already"
+        })
+    else:
+        service.add_reservation(username, appointment_time)
+        return render_template("results.html", vm = {
+            "success": True
+        })
+
+    
